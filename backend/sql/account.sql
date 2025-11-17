@@ -74,7 +74,7 @@ CREATE TABLE `users` (
   `lastname` varchar(255) DEFAULT NULL,
   `email` varchar(255) DEFAULT NULL,
   `password` varchar(255) DEFAULT NULL,
-  `profilePicture` varchar(255) DEFAULT '/images/default-profile.png',
+  `profilePicture` varchar(255) DEFAULT 'images/default-profile.png',
   `token` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 

@@ -124,9 +124,10 @@ exports.getProfilePicture = async (req, res) => {
         let profilepicture = users[0].profilePicture;
         
         // For Vercel deployments, we need to move files from /tmp to images directory
-        if (process.env.VERCEL && profilepicture && profilepicture.startsWith('/images/') && profilepicture.includes('-')) {
+        // But skip this for default images
+        if (process.env.VERCEL && profilepicture && profilepicture.startsWith('images/') && profilepicture.includes('-') && profilepicture !== 'images/default-profile.png') {
             // This is a temporary file that needs to be moved
-            const filename = profilepicture.replace('/images/', '');
+            const filename = profilepicture.replace('images/', '');
             const tmpPath = `/tmp/${filename}`;
             const targetPath = `./frontend/images/${filename}`;
             
@@ -144,7 +145,7 @@ exports.getProfilePicture = async (req, res) => {
                     console.log(`Moved profile picture from ${tmpPath} to ${targetPath}`);
                     
                     // Update the user profile picture path in database
-                    profilepicture = `/images/${filename}`;
+                    profilepicture = `images/${filename}`;
                     
                     // Update the database with the new path
                     await supabase

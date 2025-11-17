@@ -77,7 +77,8 @@ exports.getAccounts = async (req, res) => {
     const accountsWithFullImageUrls = accounts.map(account => {
         if (account.image) {
             // For Vercel deployments, we need to move files from /tmp to images directory
-            if (process.env.VERCEL && account.image.startsWith('images/') && account.image.includes('-')) {
+            // But skip this for default images
+            if (process.env.VERCEL && account.image.startsWith('images/') && account.image.includes('-') && account.image !== 'images/default.png') {
                 // This is a temporary file that needs to be moved
                 const filename = account.image.replace('images/', '');
                 const tmpPath = `/tmp/${filename}`;
