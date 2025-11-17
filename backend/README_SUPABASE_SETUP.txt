@@ -8,9 +8,20 @@ Supabase Setup Instructions
    - Copy your "Project URL" and "anon" key
 
 2. Update Your Environment Variables:
-   - Open the `.env` file in this directory
-   - Replace `your_supabase_project_url` with your actual Project URL
-   - Replace `your_supabase_anon_key` with your actual anon key
+   - For local development:
+     * Open the `.env` file in this directory
+     * Replace `your_supabase_project_url` with your actual Project URL
+     * Replace `your_supabase_anon_key` with your actual anon key
+   - For Vercel deployment:
+     * Go to your Vercel dashboard
+     * Select your project
+     * Go to "Settings" → "Environment Variables"
+     * Add the following environment variables:
+       - SUPABASE_URL: Your Supabase project URL
+       - SUPABASE_KEY: Your Supabase anon key
+       - EMAIL_USER: Your email address
+       - EMAIL_PASS: Your email app password
+       - JWT_SECRET: A strong secret for JWT tokens
 
 3. Create Database Tables:
    - In the Supabase dashboard, go to "SQL Editor" in the left sidebar
@@ -18,8 +29,15 @@ Supabase Setup Instructions
    - Click "RUN" to execute the script
    - This will create all three tables (users, accounts, otps) with proper relationships
 
-5. Test Your Setup:
-   - Run `npm start` in this directory
+5. Redeploy Your Application:
+   - After setting environment variables in Vercel, you need to redeploy your application
+   - Go to your Vercel dashboard
+   - Select your project
+   - Go to "Deployments"
+   - Click "Redeploy" or push a new commit to trigger a new deployment
+
+6. Test Your Setup:
+   - Run `npm start` in this directory for local testing
    - The application should connect to your Supabase database
 
 Example .env configuration:
