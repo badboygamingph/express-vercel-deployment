@@ -31,6 +31,12 @@ app.use('/', userRoutes);
 app.use('/', itemRoutes);
 app.use('/', accountRoutes);
 
-app.listen(port, () => {
-    console.log(`Example app listening at http://localhost:${port}`);
-});
+// Export the app for Vercel
+module.exports = app;
+
+// Only start the server if this file is run directly
+if (require.main === module) {
+    app.listen(port, () => {
+        console.log(`Example app listening at http://localhost:${port}`);
+    });
+}
