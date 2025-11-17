@@ -12,12 +12,3 @@ const getBaseUrl = () => {
     // Default for server-side or other environments
     return 'http://localhost:5000';
 };
-
-const BASE_URL = getBaseUrl();
-
-// Export the configuration
-const config = {
-    BASE_URL: BASE_URL
-};
-
-export default config;
