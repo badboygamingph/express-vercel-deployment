@@ -20,7 +20,11 @@ app.use('/images', express.static(path.join(__dirname, '../frontend/images')));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
-app.use(cors());
+// Configure CORS to be more permissive for testing
+app.use(cors({
+    origin: true,
+    credentials: true
+}));
 
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, '../frontend', 'index.html'));
@@ -30,6 +34,7 @@ app.get('/dashboard', (req, res) => {
     res.sendFile(path.join(__dirname, '../frontend', 'dashboard.html'));
 });
 
+// Mount auth routes first since they include the forgot password routes
 app.use('/', authRoutes);
 app.use('/', userRoutes);
 app.use('/', itemRoutes);

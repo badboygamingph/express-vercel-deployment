@@ -284,22 +284,28 @@ exports.verifyPasswordResetOtp = async (req, res) => {
 };
 
 exports.resetPassword = async (req, res) => {
+    console.log('resetPassword called with body:', req.body);
+    
     const { email, newPassword, confirmNewPassword } = req.body;
 
     if (!email || !newPassword || !confirmNewPassword) {
+        console.log('Missing required fields');
         return res.status(400).json({ success: false, message: 'All fields are required.' });
     }
 
     if (newPassword !== confirmNewPassword) {
+        console.log('Passwords do not match');
         return res.status(400).json({ success: false, message: 'New password and confirm password do not match.' });
     }
 
     bcrypt.hash(newPassword, 10, async (hashErr, hashedPassword) => {
         if (hashErr) {
-            console.error(hashErr);
+            console.error('Password hashing error:', hashErr);
             res.status(500).json({ success: false, message: 'An error occurred during password hashing.' });
             return;
         }
+        
+        console.log('Password hashed successfully');
 
         // Update password
         const { data, error: updateError } = await supabase
@@ -312,9 +318,7 @@ exports.resetPassword = async (req, res) => {
             return res.status(500).json({ success: false, message: 'An error occurred while resetting password.' });
         }
 
-        if (data === null) {
-            return res.status(404).json({ success: false, message: 'User not found.' });
-        }
+        console.log('Password updated successfully');
 
         // Clear token
         const { error: clearTokenError } = await supabase
