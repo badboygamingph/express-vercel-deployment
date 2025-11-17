@@ -72,7 +72,7 @@ exports.uploadProfilePicture = async (req, res) => {
         return res.status(400).json({ success: false, message: 'No file uploaded.' });
     }
 
-    let profilepicturePath = 'images/default-profile.png';
+    let profilepicturePath = 'https://nttadnyxpbuwuhgtpvjh.supabase.co/storage/v1/object/public/images/default-profile.png';
     
     // Upload file to Supabase Storage
     try {
@@ -92,7 +92,7 @@ exports.uploadProfilePicture = async (req, res) => {
                 });
             }
             // Fall back to default image if upload fails
-            profilepicturePath = 'images/default-profile.png';
+            profilepicturePath = 'https://nttadnyxpbuwuhgtpvjh.supabase.co/storage/v1/object/public/images/default-profile.png';
         } else {
             profilepicturePath = publicUrl;
         }
@@ -107,7 +107,7 @@ exports.uploadProfilePicture = async (req, res) => {
         }
     } catch (fileReadError) {
         console.error('Error reading file for Supabase upload:', fileReadError);
-        profilepicturePath = 'images/default-profile.png';
+        profilepicturePath = 'https://nttadnyxpbuwuhgtpvjh.supabase.co/storage/v1/object/public/images/default-profile.png';
     }
 
     const { data, error } = await supabase
@@ -160,7 +160,7 @@ exports.getProfilePicture = async (req, res) => {
         
         // Ensure profilePicture has a default value if null
         if (!profilepicture) {
-            profilepicture = 'images/default-profile.png';
+            profilepicture = 'https://nttadnyxpbuwuhgtpvjh.supabase.co/storage/v1/object/public/images/default-profile.png';
         }
         
         // For Supabase Storage URLs, return as-is since they're already full URLs

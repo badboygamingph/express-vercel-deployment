@@ -12,7 +12,7 @@ exports.createAccount = async (req, res) => {
         return res.status(400).json({ success: false, message: 'Site, username, and password are required.' });
     }
 
-    let imagePath = 'images/default.png';
+    let imagePath = 'https://nttadnyxpbuwuhgtpvjh.supabase.co/storage/v1/object/public/images/default.png';
     // Check if a file was uploaded
     if (req.file) {
         // Upload file to Supabase Storage
@@ -33,7 +33,7 @@ exports.createAccount = async (req, res) => {
                     });
                 }
                 // Fall back to default image if upload fails
-                imagePath = 'images/default.png';
+                imagePath = 'https://nttadnyxpbuwuhgtpvjh.supabase.co/storage/v1/object/public/images/default.png';
             } else {
                 imagePath = publicUrl;
             }
@@ -48,7 +48,7 @@ exports.createAccount = async (req, res) => {
             }
         } catch (fileReadError) {
             console.error('Error reading file for Supabase upload:', fileReadError);
-            imagePath = 'images/default.png';
+            imagePath = 'https://nttadnyxpbuwuhgtpvjh.supabase.co/storage/v1/object/public/images/default.png';
         }
     } 
     // If no file was uploaded, use the default image path that was sent from frontend
@@ -104,12 +104,12 @@ exports.getAccounts = async (req, res) => {
     const accountsWithFullImageUrls = accounts.map(account => {
         // Ensure image field has a default value if null
         if (!account.image) {
-            account.image = 'images/default.png';
+            account.image = 'https://nttadnyxpbuwuhgtpvjh.supabase.co/storage/v1/object/public/images/default.png';
         }
         
         // For Supabase Storage URLs, return as-is since they're already full URLs
         // For local images or default images, return relative path
-        if (!account.image.startsWith('http') && account.image !== 'images/default.png') {
+        if (!account.image.startsWith('http') && account.image !== 'https://nttadnyxpbuwuhgtpvjh.supabase.co/storage/v1/object/public/images/default.png') {
             account.image = account.image.replace(/\\/g, '/');
         }
         
@@ -132,7 +132,7 @@ exports.updateAccount = async (req, res) => {
         return res.status(400).json({ success: false, message: 'Site, username, and password are required.' });
     }
 
-    let imagePath = req.body.currentImage || 'images/default.png';
+    let imagePath = req.body.currentImage || 'https://nttadnyxpbuwuhgtpvjh.supabase.co/storage/v1/object/public/images/default.png';
     if (req.file) {
         // Upload new file to Supabase Storage
         try {
@@ -154,10 +154,10 @@ exports.updateAccount = async (req, res) => {
             if (error) {
                 console.error('Error uploading file to Supabase Storage:', error);
                 // Provide a more informative error message
-                if (error.message && (error.message.includes('new row violates row-level security policy') || error.message.includes('Bucket not found'))) {
+                if (error.message && (error.message.includes('new row violates row-level security policy') || error.message.includes('Bucket not found') || error.message.includes('bucket in your Supabase Storage dashboard'))) {
                     return res.status(500).json({ 
                         success: false, 
-                        message: 'Storage bucket not configured properly. Please check Supabase Storage setup instructions in README_SUPABASE_SETUP.txt' 
+                        message: error.message
                     });
                 }
                 // Keep the current image if upload fails
@@ -178,7 +178,7 @@ exports.updateAccount = async (req, res) => {
         }
     } else if (req.body.image === 'images/default.png') {
         // If user explicitly selected default image, use it
-        imagePath = 'images/default.png';
+        imagePath = 'https://nttadnyxpbuwuhgtpvjh.supabase.co/storage/v1/object/public/images/default.png';
     }
 
     // Log the image path for debugging
