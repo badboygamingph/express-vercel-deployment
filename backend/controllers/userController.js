@@ -85,14 +85,10 @@ exports.uploadProfilePicture = async (req, res) => {
         if (error) {
             console.error('Error uploading profile picture to Supabase Storage:', error);
             // Provide a more informative error message
-            if (error.message && (error.message.includes('new row violates row-level security policy') || error.message.includes('Bucket not found') || error.message.includes('bucket in your Supabase Storage dashboard'))) {
-                return res.status(500).json({ 
-                    success: false, 
-                    message: error.message
-                });
-            }
-            // Fall back to default image if upload fails
-            profilepicturePath = 'https://nttadnyxpbuwuhgtpvjh.supabase.co/storage/v1/object/public/images/default-profile.png';
+            return res.status(500).json({ 
+                success: false, 
+                message: error.message || 'Failed to upload profile picture to Supabase Storage. Please try again or contact support.'
+            });
         } else {
             profilepicturePath = publicUrl;
         }

@@ -30,6 +30,7 @@ Supabase Setup Instructions
    - This will create all three tables (users, accounts, otps) with proper relationships
 
 4. Set Up Supabase Storage:
+   - Follow the detailed instructions in `SQL_STORAGE_SETUP_INSTRUCTIONS.md` for complete setup
    - Manually create the bucket in the Supabase dashboard:
      * Go to "Storage" in the left sidebar
      * Click "New bucket"
@@ -43,29 +44,7 @@ Supabase Setup Instructions
      * Create another folder named "profile-pictures"
    - Set up row-level security policies:
      * Go to "SQL Editor" in the left sidebar
-     * Run the following SQL commands:
-       ```sql
-       -- Allow public read access to images bucket
-       INSERT INTO storage.buckets (id, name, public) 
-       VALUES ('images', 'images', true) 
-       ON CONFLICT (id) DO UPDATE SET public = true;
-       
-       -- Allow authenticated users to upload and delete files
-       CREATE POLICY "Allow authenticated uploads" 
-       ON storage.objects FOR INSERT 
-       TO authenticated 
-       WITH CHECK (bucket_id = 'images');
-       
-       CREATE POLICY "Allow authenticated deletes" 
-       ON storage.objects FOR DELETE 
-       TO authenticated 
-       USING (bucket_id = 'images');
-       
-       CREATE POLICY "Allow public reads" 
-       ON storage.objects FOR SELECT 
-       TO public 
-       USING (bucket_id = 'images');
-       ```
+     * Run the SQL commands from `sql/supabase_storage_policies.sql` file for complete and safe storage policies
 
 5. Redeploy Your Application:
    - After setting environment variables in Vercel, you need to redeploy your application
@@ -77,6 +56,8 @@ Supabase Setup Instructions
 6. Test Your Setup:
    - Run `npm start` in this directory for local testing
    - The application should connect to your Supabase database
+   - To specifically test Supabase Storage functionality, run `node test_supabase_storage.js`
+   - This will verify that the 'images' bucket exists and that you can upload/download files
 
 Example .env configuration:
 SUPABASE_URL=https://nttadnyxpbuwuhgtpvjh.supabase.co

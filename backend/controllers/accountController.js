@@ -26,14 +26,10 @@ exports.createAccount = async (req, res) => {
             if (error) {
                 console.error('Error uploading file to Supabase Storage:', error);
                 // Provide a more informative error message
-                if (error.message && (error.message.includes('new row violates row-level security policy') || error.message.includes('Bucket not found') || error.message.includes('bucket in your Supabase Storage dashboard'))) {
-                    return res.status(500).json({ 
-                        success: false, 
-                        message: error.message
-                    });
-                }
-                // Fall back to default image if upload fails
-                imagePath = 'https://nttadnyxpbuwuhgtpvjh.supabase.co/storage/v1/object/public/images/default.png';
+                return res.status(500).json({ 
+                    success: false, 
+                    message: error.message || 'Failed to upload image to Supabase Storage. Please try again or contact support.'
+                });
             } else {
                 imagePath = publicUrl;
             }
@@ -154,13 +150,10 @@ exports.updateAccount = async (req, res) => {
             if (error) {
                 console.error('Error uploading file to Supabase Storage:', error);
                 // Provide a more informative error message
-                if (error.message && (error.message.includes('new row violates row-level security policy') || error.message.includes('Bucket not found') || error.message.includes('bucket in your Supabase Storage dashboard'))) {
-                    return res.status(500).json({ 
-                        success: false, 
-                        message: error.message
-                    });
-                }
-                // Keep the current image if upload fails
+                return res.status(500).json({ 
+                    success: false, 
+                    message: error.message || 'Failed to upload image to Supabase Storage. Please try again or contact support.'
+                });
             } else {
                 imagePath = publicUrl;
             }
