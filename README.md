@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # FullStack Express Application
 
 A full-stack web application with user authentication, dashboard, and account management features.
@@ -114,3 +115,6 @@ Feel free to fork this repository and submit pull requests.
 
 ## License
 This project is licensed under the MIT License.
+=======
+# express-vercel-deployment
+>>>>>>> eca536cca4876908a895aea669561bdce96ba5b1
