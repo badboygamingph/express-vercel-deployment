@@ -1,5 +1,6 @@
 const supabase = require('../db');
 const fs = require('fs');
+const path = require('path');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const { JWT_SECRET, BASE_URL } = require('../config/config');
@@ -64,6 +65,25 @@ exports.uploadProfilePicture = async (req, res) => {
         return res.status(400).json({ success: false, message: 'No file uploaded.' });
     }
 
+    // Check if we're running on Vercel
+    if (process.env.VERCEL && req.file.path.startsWith('/tmp')) {
+        // Move file from /tmp to images directory
+        const targetPath = path.join(__dirname, '../../frontend/images', req.file.filename);
+        try {
+            fs.renameSync(req.file.path, targetPath);
+        } catch (moveError) {
+            console.error('Error moving file:', moveError);
+            // If rename fails, try copy and delete
+            try {
+                fs.copyFileSync(req.file.path, targetPath);
+                fs.unlinkSync(req.file.path);
+            } catch (copyError) {
+                console.error('Error copying file:', copyError);
+                return res.status(500).json({ success: false, message: 'Error processing uploaded file.' });
+            }
+        }
+    }
+
     const profilepicturePath = `/images/${req.file.filename}`;
 
     const { data, error } = await supabase
@@ -73,14 +93,21 @@ exports.uploadProfilePicture = async (req, res) => {
 
     if (error) {
         console.error('Error updating profile picture in DB:', error);
-        fs.unlink(req.file.path, (unlinkErr) => {
+        const filePath = process.env.VERCEL && req.file.path.startsWith('/tmp') ? 
+            path.join(__dirname, '../../frontend/images', req.file.filename) : 
+            req.file.path;
+        fs.unlink(filePath, (unlinkErr) => {
             if (unlinkErr) console.error('Error deleting uploaded file:', unlinkErr);
         });
         return res.status(500).json({ success: false, message: 'Error saving profile picture.' });
     }
 
-    if (data === null) {
-        fs.unlink(req.file.path, (unlinkErr) => {
+    // Check if no rows were affected (user not found or not owned by user)
+    if (data && data.length === 0) {
+        const filePath = process.env.VERCEL && req.file.path.startsWith('/tmp') ? 
+            path.join(__dirname, '../../frontend/images', req.file.filename) : 
+            req.file.path;
+        fs.unlink(filePath, (unlinkErr) => {
             if (unlinkErr) console.error('Error deleting uploaded file:', unlinkErr);
         });
         return res.status(404).json({ success: false, message: 'User not found or you do not have permission to update profile picture.' });

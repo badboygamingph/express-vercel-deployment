@@ -1,5 +1,6 @@
 const supabase = require('../db');
 const fs = require('fs');
+const path = require('path');
 const config = require('../config/config');
 
 exports.createAccount = async (req, res) => {
@@ -12,6 +13,24 @@ exports.createAccount = async (req, res) => {
 
     let imagePath = 'images/default.png';
     if (req.file) {
+        // Check if we're running on Vercel
+        if (process.env.VERCEL && req.file.path.startsWith('/tmp')) {
+            // Move file from /tmp to images directory
+            const targetPath = path.join(__dirname, '../../frontend/images', req.file.filename);
+            try {
+                fs.renameSync(req.file.path, targetPath);
+            } catch (moveError) {
+                console.error('Error moving file:', moveError);
+                // If rename fails, try copy and delete
+                try {
+                    fs.copyFileSync(req.file.path, targetPath);
+                    fs.unlinkSync(req.file.path);
+                } catch (copyError) {
+                    console.error('Error copying file:', copyError);
+                    return res.status(500).json({ success: false, message: 'Error processing uploaded file.' });
+                }
+            }
+        }
         imagePath = `images/${req.file.filename}`;
     } else if (req.body.image === 'images/default.png') {
         imagePath = 'images/default.png';
@@ -33,7 +52,10 @@ exports.createAccount = async (req, res) => {
     if (error) {
         console.error(error);
         if (req.file) {
-            fs.unlink(req.file.path, (unlinkErr) => {
+            const filePath = process.env.VERCEL && req.file.path.startsWith('/tmp') ? 
+                path.join(__dirname, '../../frontend/images', req.file.filename) : 
+                req.file.path;
+            fs.unlink(filePath, (unlinkErr) => {
                 if (unlinkErr) console.error('Error deleting uploaded file:', unlinkErr);
             });
         }
@@ -80,6 +102,24 @@ exports.updateAccount = async (req, res) => {
 
     let imagePath = req.body.currentImage;
     if (req.file) {
+        // Check if we're running on Vercel
+        if (process.env.VERCEL && req.file.path.startsWith('/tmp')) {
+            // Move file from /tmp to images directory
+            const targetPath = path.join(__dirname, '../../frontend/images', req.file.filename);
+            try {
+                fs.renameSync(req.file.path, targetPath);
+            } catch (moveError) {
+                console.error('Error moving file:', moveError);
+                // If rename fails, try copy and delete
+                try {
+                    fs.copyFileSync(req.file.path, targetPath);
+                    fs.unlinkSync(req.file.path);
+                } catch (copyError) {
+                    console.error('Error copying file:', copyError);
+                    return res.status(500).json({ success: false, message: 'Error processing uploaded file.' });
+                }
+            }
+        }
         imagePath = `images/${req.file.filename}`;
     }
 
@@ -97,7 +137,10 @@ exports.updateAccount = async (req, res) => {
     if (error) {
         console.error(error);
         if (req.file) {
-            fs.unlink(req.file.path, (unlinkErr) => {
+            const filePath = process.env.VERCEL && req.file.path.startsWith('/tmp') ? 
+                path.join(__dirname, '../../frontend/images', req.file.filename) : 
+                req.file.path;
+            fs.unlink(filePath, (unlinkErr) => {
                 if (unlinkErr) console.error('Error deleting uploaded file:', unlinkErr);
             });
         }
@@ -107,7 +150,10 @@ exports.updateAccount = async (req, res) => {
     // Check if no rows were affected (account not found or not owned by user)
     if (data && data.length === 0) {
         if (req.file) {
-            fs.unlink(req.file.path, (unlinkErr) => {
+            const filePath = process.env.VERCEL && req.file.path.startsWith('/tmp') ? 
+                path.join(__dirname, '../../frontend/images', req.file.filename) : 
+                req.file.path;
+            fs.unlink(filePath, (unlinkErr) => {
                 if (unlinkErr) console.error('Error deleting uploaded file:', unlinkErr);
             });
         }

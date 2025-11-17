@@ -10,7 +10,7 @@ if (typeof BASE_URL === 'undefined') {
             // For production, use the current domain
             return window.location.origin;
         }
-        // Default for server-side or other environments
+        // Defa for server-side or other environments
         return 'http://localhost:5000';
     })();
     
@@ -147,18 +147,29 @@ $(document).ready(function() {
 
         try {
             const response = await fetch(url, options);
-            const data = await response.json();
-
-            if (!response.ok) {
-                if ((response.status === 401 || response.status === 403) && !bypassAuthRedirect) {
-                    localStorage.removeItem('authToken');
-                    sessionStorage.setItem('logoutMessage', data.message || 'Your session has expired. Please log in again.');
-                    window.location.href = 'index.html';
-                    return; 
+            
+            // Check if response is JSON
+            const contentType = response.headers.get('content-type');
+            if (contentType && contentType.includes('application/json')) {
+                const data = await response.json();
+                
+                if (!response.ok) {
+                    if ((response.status === 401 || response.status === 403) && !bypassAuthRedirect) {
+                        localStorage.removeItem('authToken');
+                        sessionStorage.setItem('logoutMessage', data.message || 'Your session has expired. Please log in again.');
+                        window.location.href = 'index.html';
+                        return; 
+                    }
+                    return { ...data, status: response.status }; 
                 }
-                return { ...data, status: response.status }; 
+                return data;
+            } else {
+                // Handle non-JSON responses (like HTML error pages)
+                const text = await response.text();
+                console.error('Server returned non-JSON response:', text);
+                showToast('Server error. Please try again.', 'error');
+                return { success: false, message: 'Server error. Please try again.' };
             }
-            return data;
         } catch (error) {
             console.error('Fetch error:', error);
             showToast('Network error or server unreachable.', 'error');

@@ -2,9 +2,17 @@ const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
 
-const uploadDir = path.join(__dirname, '../../frontend', 'images');
-if (!fs.existsSync(uploadDir)) {
-    fs.mkdirSync(uploadDir, { recursive: true });
+let uploadDir = path.join(__dirname, '../../frontend', 'images');
+
+// Check if we're running on Vercel
+if (process.env.VERCEL) {
+    // Use /tmp directory on Vercel (readable and writable)
+    uploadDir = '/tmp';
+} else {
+    // Local development - use frontend/images directory
+    if (!fs.existsSync(uploadDir)) {
+        fs.mkdirSync(uploadDir, { recursive: true });
+    }
 }
 
 const storage = multer.diskStorage({
