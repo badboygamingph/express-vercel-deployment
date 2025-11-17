@@ -9,7 +9,7 @@ exports.getUserInfo = async (req, res) => {
 
     const { data: users, error } = await supabase
         .from('users')
-        .select('id, firstname, middlename, lastname, email, profilePicture')
+        .select('id, firstname, middlename, lastname, email, profilepicture')
         .eq('id', userId);
 
     if (error) {
@@ -19,8 +19,8 @@ exports.getUserInfo = async (req, res) => {
 
     if (users.length > 0) {
         const user = users[0];
-        if (user.profilePicture && !user.profilePicture.startsWith('http')) {
-            user.profilePicture = `${BASE_URL}/${user.profilePicture.replace(/\\/g, '/')}`;
+        if (user.profilepicture && !user.profilepicture.startsWith('http')) {
+            user.profilepicture = `${BASE_URL}/${user.profilepicture.replace(/\\/g, '/')}`;
         }
         res.json({ success: true, user: user });
     } else {
@@ -63,11 +63,11 @@ exports.uploadProfilePicture = async (req, res) => {
         return res.status(400).json({ success: false, message: 'No file uploaded.' });
     }
 
-    const profilePicturePath = `/images/${req.file.filename}`;
+    const profilepicturePath = `/images/${req.file.filename}`;
 
     const { data, error } = await supabase
         .from('users')
-        .update({ profilePicture: profilePicturePath })
+        .update({ profilepicture: profilepicturePath })
         .eq('id', userId);
 
     if (error) {
@@ -85,8 +85,8 @@ exports.uploadProfilePicture = async (req, res) => {
         return res.status(404).json({ success: false, message: 'User not found or you do not have permission to update profile picture.' });
     }
 
-    const fullProfilePicturePath = `${BASE_URL}${profilePicturePath.replace(/\\/g, '/')}`;
-    res.json({ success: true, message: 'Profile picture updated successfully!', profilePicture: fullProfilePicturePath });
+    const fullProfilePicturePath = `${BASE_URL}${profilepicturePath.replace(/\\/g, '/')}`;
+    res.json({ success: true, message: 'Profile picture updated successfully!', profilepicture: fullProfilePicturePath });
 };
 
 exports.getProfilePicture = async (req, res) => {
@@ -94,7 +94,7 @@ exports.getProfilePicture = async (req, res) => {
 
     const { data: users, error } = await supabase
         .from('users')
-        .select('profilePicture')
+        .select('profilepicture')
         .eq('id', userId);
 
     if (error) {
@@ -103,11 +103,11 @@ exports.getProfilePicture = async (req, res) => {
     }
 
     if (users.length > 0) {
-        let profilePicture = users[0].profilePicture;
-        if (profilePicture && !profilePicture.startsWith('http')) {
-            profilePicture = `${BASE_URL}/${profilePicture.replace(/\\/g, '/')}`;
+        let profilepicture = users[0].profilepicture;
+        if (profilepicture && !profilepicture.startsWith('http')) {
+            profilepicture = `${BASE_URL}/${profilepicture.replace(/\\/g, '/')}`;
         }
-        res.json({ success: true, profilePicture: profilePicture });
+        res.json({ success: true, profilepicture: profilepicture });
     } else {
         res.status(404).json({ success: false, message: 'User not found.' });
     }

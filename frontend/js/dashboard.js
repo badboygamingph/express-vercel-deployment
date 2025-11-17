@@ -473,7 +473,7 @@ $(document).ready(function() {
         const data = await fetchData(`${BASE_URL}/upload-profile-picture`, 'POST', formData, true);
         if (data && data.success) {
             showToast('Profile picture updated successfully!', 'success');
-            $('.navbar-nav .avatar').attr('src', data.profilePicture);
+            $('.navbar-nav .avatar').attr('src', data.profilepicture);
             $('#changeProfilePictureForm')[0].reset();
         } else if (data) {
             showToast(data.message, 'error');
@@ -482,8 +482,8 @@ $(document).ready(function() {
 
     const loadUserProfilePicture = async () => {
         const data = await fetchData(`${BASE_URL}/profile-picture`);
-        if (data && data.success && data.profilePicture) {
-            $('.navbar-nav .avatar').attr('src', data.profilePicture);
+        if (data && data.success && data.profilepicture) {
+            $('.navbar-nav .avatar').attr('src', data.profilepicture);
         } else {
             $('.navbar-nav .avatar').attr('src', 'images/default-profile.png');
         }
