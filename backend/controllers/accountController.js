@@ -168,7 +168,11 @@ exports.updateAccount = async (req, res) => {
                 imagePath = publicUrl;
                 
                 // If there was a previous image stored in Supabase Storage, delete it
-                if (currentImage && currentImage.startsWith('http') && currentImage.includes('supabase.co/storage')) {
+                // But only if it's not the default account image
+                if (currentImage && 
+                    currentImage.startsWith('http') && 
+                    currentImage.includes('supabase.co/storage') &&
+                    currentImage !== 'https://nttadnyxpbuwuhgtpvjh.supabase.co/storage/v1/object/public/images/default.png') {
                     try {
                         // Extract the file path from the URL
                         // The URL format is: https://<project>.supabase.co/storage/v1/object/public/<bucket>/<path>
@@ -209,7 +213,11 @@ exports.updateAccount = async (req, res) => {
         imagePath = 'https://nttadnyxpbuwuhgtpvjh.supabase.co/storage/v1/object/public/images/default.png';
         
         // If there was a previous image stored in Supabase Storage, delete it
-        if (currentImage && currentImage.startsWith('http') && currentImage.includes('supabase.co/storage')) {
+        // But only if it's not the default account image
+        if (currentImage && 
+            currentImage.startsWith('http') && 
+            currentImage.includes('supabase.co/storage') &&
+            currentImage !== 'https://nttadnyxpbuwuhgtpvjh.supabase.co/storage/v1/object/public/images/default.png') {
             try {
                 // Extract the file path from the URL
                 // The URL format is: https://<project>.supabase.co/storage/v1/object/public/<bucket>/<path>
@@ -313,7 +321,11 @@ exports.deleteAccount = async (req, res) => {
     }
 
     // If the account had an image stored in Supabase Storage, delete it
-    if (accountImage && accountImage.startsWith('http') && accountImage.includes('supabase.co/storage')) {
+    // But only if it's not the default account image
+    if (accountImage && 
+        accountImage.startsWith('http') && 
+        accountImage.includes('supabase.co/storage') &&
+        accountImage !== 'https://nttadnyxpbuwuhgtpvjh.supabase.co/storage/v1/object/public/images/default.png') {
         try {
             // Extract the file path from the URL
             // The URL format is: https://<project>.supabase.co/storage/v1/object/public/<bucket>/<path>

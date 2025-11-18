@@ -119,7 +119,11 @@ exports.uploadProfilePicture = async (req, res) => {
             profilepicturePath = publicUrl;
             
             // If there was a previous profile picture stored in Supabase Storage, delete it
-            if (currentProfilePicture && currentProfilePicture.startsWith('http') && currentProfilePicture.includes('supabase.co/storage')) {
+            // But only if it's not the default profile picture
+            if (currentProfilePicture && 
+                currentProfilePicture.startsWith('http') && 
+                currentProfilePicture.includes('supabase.co/storage') &&
+                currentProfilePicture !== 'https://nttadnyxpbuwuhgtpvjh.supabase.co/storage/v1/object/public/images/default-profile.png') {
                 try {
                     // Extract the file path from the URL
                     // The URL format is: https://<project>.supabase.co/storage/v1/object/public/<bucket>/<path>
@@ -165,7 +169,8 @@ exports.uploadProfilePicture = async (req, res) => {
     if (error) {
         console.error('Error updating profile picture in DB:', error);
         // If there was an error, try to delete the uploaded file from Supabase
-        if (profilepicturePath.startsWith('http')) {
+        // But only if it's not the default profile picture
+        if (profilepicturePath.startsWith('http') && profilepicturePath !== 'https://nttadnyxpbuwuhgtpvjh.supabase.co/storage/v1/object/public/images/default-profile.png') {
             const urlParts = profilepicturePath.split('/');
             const fileName = urlParts[urlParts.length - 1];
             const filePath = `profile-pictures/${fileName}`;
@@ -177,7 +182,7 @@ exports.uploadProfilePicture = async (req, res) => {
     // Check if no rows were affected (user not found or not owned by user)
     if (data && data.length === 0) {
         // If there was an error, try to delete the uploaded file from Supabase
-        if (profilepicturePath.startsWith('http')) {
+        if (profilepicturePath.startsWith('http') && profilepicturePath !== 'https://nttadnyxpbuwuhgtpvjh.supabase.co/storage/v1/object/public/images/default-profile.png') {
             const urlParts = profilepicturePath.split('/');
             const fileName = urlParts[urlParts.length - 1];
             const filePath = `profile-pictures/${fileName}`;

@@ -74,7 +74,7 @@ CREATE TABLE `users` (
   `lastname` varchar(255) DEFAULT NULL,
   `email` varchar(255) DEFAULT NULL,
   `password` varchar(255) DEFAULT NULL,
-  `profilePicture` varchar(255) DEFAULT 'images/default-profile.png',
+  `profilePicture` varchar(255) DEFAULT 'https://nttadnyxpbuwuhgtpvjh.supabase.co/storage/v1/object/public/images/default-profile.png',
   `token` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
@@ -83,8 +83,8 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `firstname`, `middlename`, `lastname`, `email`, `password`, `profilePicture`, `token`) VALUES
-(1, 'Dariel', 'P', 'Ganzon', 'darielganzon2023@gmail.com', '$2b$10$umqcqPxSCRrZDeIKPTCyjuwNvZKef.YlYXCRFK0LRb9Bm.2ndezlK', 'images/default-profile.png', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJkYXJpZWxnYW56b24yMDIzQGdtYWlsLmNvbSIsImlhdCI6MTc1NjE5MjQzNywiZXhwIjoxNzU2MTk2MDM3fQ.EzzgQnsH458iJiPX5xrAbBFs9S_ZCfmvsPF2yg0O-Fo'),
-(2, 'Demie ', 'S', 'Agum', 'demie.agum09@gmail.com', '$2b$10$RVTelXowG9owMSPuvgBcBekOpYpatCK56NU35ZshiCyLTFijmKiFm', 'images/default-profile.png', NULL);
+(1, 'Dariel', 'P', 'Ganzon', 'darielganzon2023@gmail.com', '$2b$10$umqcqPxSCRrZDeIKPTCyjuwNvZKef.YlYXCRFK0LRb9Bm.2ndezlK', 'https://nttadnyxpbuwuhgtpvjh.supabase.co/storage/v1/object/public/images/default-profile.png', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJkYXJpZWxnYW56b24yMDIzQGdtYWlsLmNvbSIsImlhdCI6MTc1NjE5MjQzNywiZXhwIjoxNzU2MTk2MDM3fQ.EzzgQnsH458iJiPX5xrAbBFs9S_ZCfmvsPF2yg0O-Fo'),
+(2, 'Demie ', 'S', 'Agum', 'demie.agum09@gmail.com', '$2b$10$RVTelXowG9owMSPuvgBcBekOpYpatCK56NU35ZshiCyLTFijmKiFm', 'https://nttadnyxpbuwuhgtpvjh.supabase.co/storage/v1/object/public/images/default-profile.png', NULL);
 
 --
 -- Indexes for dumped tables
