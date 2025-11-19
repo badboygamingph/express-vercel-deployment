@@ -166,16 +166,21 @@ exports.verifyOtpAndRegister = async (req, res) => {
     console.log('Stored OTP:', storedOtp.otp_code, 'Provided OTP:', otp);
     console.log('Current time:', currentTime, 'Expires at:', new Date(storedOtp.expires_at));
 
-    if (storedOtp.otp_code !== otp || currentTime > new Date(storedOtp.expires_at)) {
-        console.log('OTP mismatch or expired');
-        // Delete expired/invalid OTP
+    if (storedOtp.otp_code !== otp) {
+        console.log('OTP mismatch');
+        return res.status(400).json({ success: false, message: 'Invalid OTP. Please try again.' });
+    }
+    
+    if (currentTime > new Date(storedOtp.expires_at)) {
+        console.log('OTP expired');
+        // Delete expired OTP
         const { error: deleteError } = await supabase
             .from('otps')
             .delete()
             .eq('email', email);
 
-        if (deleteError) console.error('Error deleting expired/invalid OTP:', deleteError);
-        return res.status(400).json({ success: false, message: 'Invalid or expired OTP.' });
+        if (deleteError) console.error('Error deleting expired OTP:', deleteError);
+        return res.status(400).json({ success: false, message: 'OTP has expired. Please request a new one.' });
     }
 
     // Check if email already exists
